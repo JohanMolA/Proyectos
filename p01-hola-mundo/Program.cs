@@ -8,4 +8,3 @@ Console.WriteLine($"Hola {amigo} bienvenido a C#");
 Console.WriteLine($"\n Mi amigo es {amigo} mi hermano es {hermano}");
 Console.WriteLine("Nombres en mayusculas");
 Console.WriteLine($" {amigo.ToUpper()} {hermano.ToUpper()} ");
-
