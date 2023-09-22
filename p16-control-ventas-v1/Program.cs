@@ -44,5 +44,4 @@ foreach (Cliente cliente in miTienda.Clientes)
     }
     Console.WriteLine($"- Subtotal: {cliente.Subtotal(), 36:c2}\n");
 }
-
 Console.WriteLine($"\n\n- Total: {miTienda.Total(), 40:c2}");
