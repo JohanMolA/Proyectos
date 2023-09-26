@@ -38,3 +38,7 @@
 # Tarea 2
 
 - p16-control-ventas-v1
+
+# Primer Examen Parcial
+
+- p17-primer-examen-parcial

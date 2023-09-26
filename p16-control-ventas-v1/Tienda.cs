@@ -24,7 +24,7 @@ public class Tienda
             total = total + cliente.Ventas.Count();
         return total;
     }
-
+    
     public override string ToString () => $"Nombre: {Nombre}\nPropietario: {Propietario}\nDomicilio: {Domicilio}";
     
 }
