@@ -42,3 +42,9 @@
 # Primer Examen Parcial
 
 - p17-primer-examen-parcial
+
+# Actividad 6
+
+- p17-linq1
+- p18-linq2
+- p19-linq3
