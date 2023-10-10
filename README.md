@@ -48,3 +48,8 @@
 - p17-linq1
 - p18-linq2
 - p19-linq3
+
+# Actividad 7
+
+- p21-linq4
+- p22-linq5
