@@ -52,4 +52,3 @@
 # Actividad 7
 
 - p21-linq4
-- p22-linq5
