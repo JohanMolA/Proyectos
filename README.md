@@ -52,3 +52,12 @@
 # Actividad 7
 
 - p21-linq4
+
+# Actividad 8
+
+- p23-BlazorApp
+- p24-TodoList
+
+# Actividad 9
+
+- p25-crud
