@@ -61,3 +61,8 @@
 # Actividad 9
 
 - p25-crud
+- p26-crud-jugador
+
+# Segundo Examen Parcial
+
+- p27-segundo-examen-parcial
