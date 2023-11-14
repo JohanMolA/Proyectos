@@ -66,3 +66,7 @@
 # Segundo Examen Parcial
 
 - p27-segundo-examen-parcial
+
+# Actividad 10
+
+- p28-crud-universidad
