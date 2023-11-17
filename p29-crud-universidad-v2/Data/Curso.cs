@@ -9,6 +9,6 @@ public class Curso {
     [Range(2,7)]
     public int Creditos {get; set;}
 
-    public ICollection<Inscripcion> Inscripciones {get; set;} //modela la relacion de uno a muchos
+    public ICollection<Inscripcion> Inscripciones {get; set;} 
 
 }
