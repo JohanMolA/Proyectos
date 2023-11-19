@@ -1,0 +1,90 @@
+@* Pages/ReservacionAgregarEditar.razor *@
+@page "/reservacion/agregar"
+@page "/reservacion/editar/{Id:int}"
+@inject NavigationManager NavigationManager
+@inject ReservacionServicio reservacionServicio
+@inject ClienteServicio clienteServicio;
+@inject HabitacionServicio habitacionServicio;
+
+<h3>@Titulo</h3>
+
+<div class="row">
+    <div class="col-md-6">
+        <EditForm Model="@ins" OnValidSubmit="Grabar">
+            <DataAnnotationsValidator/>
+            <div class="form-group">
+                <label for="ClienteId" class="control-label">Cliente </label>
+                <InputSelect id="ClienteId" class="form-control" @bind-Value="ins.ClienteId">
+                <option value="@(0)" disabled >-Elije un cliente-</option>
+                @foreach (var i in @est) {
+                    <option value="@i.Id">@i.NombreCompleto</option>
+                }
+                </InputSelect>
+            </div>
+            
+            <div class="form-group">
+                <label for="HabitacionId" class="control-label">Habitacion </label>
+                <InputSelect id="HabitacionId" class="form-control" @bind-Value="ins.HabitacionId">
+                <option value="@(0)" disabled >-Elije una habitacion-</option>
+                @foreach (var i in @cur) {
+                    <option value="@i.HabitacionId">@i.HabitacionCompleta</option>
+                }
+                </InputSelect>
+            </div>
+
+            <div class="form-group">
+                    <label for="InicioReserva">InicioReserva</label>
+                    <InputDate class="form-control" @bind-Value="ins.InicioReserva"/>
+                    <ValidationMessage For="@(()=>ins.InicioReserva)"/>
+            </div>
+
+            <div class="form-group">
+                    <label for="FinReserva">FinReserva</label>
+                    <InputDate class="form-control" @bind-Value="ins.FinReserva"/>
+                    <ValidationMessage For="@(()=>ins.FinReserva)"/>
+            </div>
+            
+            <div>
+            @mensaje
+            </div>
+
+              <div class="my-2">
+                <input type="submit" class="btn btn-primary" value="Grabar"/>
+                <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancelar"/>
+              </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int Id {get; set;}
+    
+    Reservacion ins = new Reservacion();
+    
+    List<Cliente> est;
+    List<Habitacion> cur;
+        
+    private string mensaje = string.Empty;
+    private string Titulo="Reservar Habitacion";
+    private bool deshabilitar = false;
+    
+    protected void Grabar() {
+        if(reservacionServicio.AgregarActualizar(ins)) {
+            mensaje = "Agregado exitosamente ";
+        } else mensaje = "No pudo agregarse";
+        NavigationManager.NavigateTo("reservaciones",forceLoad:true);
+    }
+    void Cancel() {
+        NavigationManager.NavigateTo("reservaciones",forceLoad:true);
+    }
+    protected override void OnInitialized() {
+        if (Id > 0) {
+            Titulo = "Actualizar Reservacion";
+            ins = reservacionServicio.EcontrarPorId(Id);
+            deshabilitar = true;
+        }
+        est = clienteServicio.ObtenerTodo("");
+        cur = habitacionServicio.ObtenerTodo("");
+    }
+}

@@ -1,0 +1,88 @@
+@* Pages/Reservaciones.razor *@
+@page "/reservaciones"
+@inject ReservacionServicio reservacionServicio
+@inject IJSRuntime jsRuntime
+
+<h3>Reservaciones</h3>
+
+<NavLink class="nav-link" href="reservacion/agregar">
+<span class="oi oi-plus" aria-hidden="true">Agregar reservacion</span>
+</NavLink>
+
+<div class="row">
+    <div class="col-md-6">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+            <th colspan="2">Nombre Completo</th>
+            <th colspan="4">Tipo - NoHab - Piso - Costo</th>
+            <th>InicioReserva</th>
+            <th>FinReserva</th>
+            <th>DiasReserva</th>
+            <th>CostoTotal</th>
+            <th>Accion</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reservacion in reservaciones)
+            {
+            <tr>
+                <td>@reservacion.Cliente.NombreCompleto.Split(' ')[0]</td>
+                <td>@reservacion.Cliente.NombreCompleto.Split(' ')[1]</td>
+                <td>@reservacion.Habitacion.HabitacionCompleta3.Split(' ')[0]</td>
+                <td>@reservacion.Habitacion.HabitacionCompleta3.Split(' ')[1]</td>
+                <td>@reservacion.Habitacion.HabitacionCompleta3.Split(' ')[2]</td>
+                <td>@reservacion.Habitacion.HabitacionCompleta3.Split(' ')[3]</td>
+                <!-- <td>@String.Format("{0} {1} - {2} - {3}", reservacion.Cliente.Nombre, reservacion.Cliente.Apellido, reservacion.Habitacion.Tipo, reservacion.Habitacion.Piso)
+                </td> -->
+                <td>@reservacion.InicioReserva.ToString("yyyy-MM-dd")</td>
+                <td>@reservacion.FinReserva.ToString("yyyy-MM-dd")</td>
+                <td>@reservacion.DiasReserva</td>
+                <td>@String.Format("{0:C2}", reservacion.Habitacion.Costo*reservacion.DiasReserva)</td>
+                <td>
+                <a
+                href="reservacion/editar/@reservacion.ReservacionId"
+                class="btn btn-success">Editar</a>
+                <a class="btn btn-danger" @onclick="async ()=> await
+                Borrar(reservacion)">Borrar</a>
+                </td>
+            </tr>
+            }
+        </tbody>
+        </table>
+    </div>
+    <h7>Reservas = @totalReservas()</h7>
+    <h7>Dias Reservados = @diasReservados()</h7>
+    <h7>Costo Total = @costoTotal().ToString("C")</h7>
+    
+</div>
+
+@code {
+    private List<Reservacion> reservaciones = new();
+        
+    protected override void OnInitialized(){
+        reservaciones = reservacionServicio.ObtenerTodo();
+    }
+    
+    private async Task Borrar(Reservacion reservacion) {
+        bool confirmed = await jsRuntime.InvokeAsync<bool>("confirm", "Estas seguro????");
+        if (confirmed)
+        if(reservacionServicio.Borrar(reservacion.ReservacionId))
+        reservaciones.Remove(reservacion);
+    }
+
+    private int totalReservas()
+    {
+        return reservaciones.Count;
+    }
+
+    private int diasReservados()
+    {
+        return reservaciones.Sum(c => c.DiasReserva);
+    }
+
+    private double costoTotal()
+    {
+        return reservaciones.Sum(c => c.Habitacion.Costo*c.DiasReserva);
+    }
+}

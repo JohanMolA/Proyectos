@@ -1,0 +1,109 @@
+@* Pages/Clientes.razor *@
+@page "/clientes"
+@inject ClienteServicio clienteServicio
+@inject IJSRuntime jsRuntime
+
+<h3>Clientes</h3>
+
+<NavLink class="nav-link" href="cliente/agregar">
+<span class="oi oi-plus" aria-hidden="true">Agregar cliente</span>
+</NavLink>
+
+<label>Buscar cliente:</label>
+<input type="text" @oninput="@( (e) => Filtro(e) )">
+
+<div class="row">
+    <div class="col-md-6">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Genero</th>
+            <th>FechaCumple</th>
+            <th>Correo</th>
+            <th>Telefono</th>
+            <th colspan="2">NombreCompleto</th>
+            <th>Edad</th>
+            <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cliente in clientes) {
+            <tr>
+            <td>@cliente.Nombre</td>
+            <td>@cliente.Apellido</td>
+            <td>@cliente.Genero</td>
+            <td>@cliente.FechaCumple.ToString("yyyy-MM-dd")</td>
+            <td>@cliente.Correo</td>
+            <td>@string.Format("{0:###-###-##-##}",long.Parse(cliente.Telefono))</td>
+            <td>@cliente.NombreCompleto.Split(' ')[0]</td>
+            <td>@cliente.NombreCompleto.Split(' ')[1]</td>
+            <td>@cliente.Edad</td>
+            <td>
+            <a href="cliente/editar/@cliente.Id" class="btn btn-success">Editar</a>
+            <a class="btn btn-danger" @onclick="async ()=> await
+            Borrar(cliente)">Borrar</a>
+            </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    </div>
+     <h7>Clientes = @totalRegistros()</h7>
+     <h7>Promedio = @calcularPromedio()</h7>
+     <h7>Mujeres = @totalMujeres()</h7>
+     <h7>Hombres = @totalHombres()</h7>
+</div>
+
+@code {
+    private List<Cliente> clientes = new();
+    protected override void OnInitialized() {
+    clientes = clienteServicio.ObtenerTodo("");
+    }
+    
+    private async Task Borrar(Cliente cliente) {
+        bool confirmed = await jsRuntime.InvokeAsync<bool>("confirm", "Estas seguro????");
+            if (confirmed)
+              if(clienteServicio.Borrar(cliente.Id))
+              clientes.Remove(cliente);
+    }
+    
+    protected void Filtro(ChangeEventArgs e) {
+        string cadenabuscar = e.Value.ToString();
+        clientes = clienteServicio.ObtenerTodo(cadenabuscar);
+    }
+    
+    private int totalRegistros()
+    {
+        return clientes.Count;
+    }
+
+    private int totalMujeres()
+    {
+        return clientes.Count(c => c.Genero == 'M');
+    }
+
+    private int totalHombres()
+    {
+        return clientes.Count(c => c.Genero == 'H');
+    }
+
+    private int sumaEdad()
+    {
+        return clientes.Sum(c => c.Edad);
+    }
+
+    public int calcularPromedio() {
+        int totalClientes = totalRegistros();
+        int sumaEdades = sumaEdad();
+
+        if (totalClientes == 0) {
+            return 0;
+        }
+
+        int promedio = (int)Math.Round((double)sumaEdades / totalClientes);
+        return promedio;
+    }
+
+}
